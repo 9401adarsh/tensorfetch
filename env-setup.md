@@ -1,6 +1,12 @@
 TensorFetch Environment Setup Guide
 
-This guide sets up the complete environment for TensorFetch development inside a UTM Ubuntu 22.04 ARM64 VM running on an M3 MacBook Air.
+This guide sets up the complete environment for TensorFetch development inside a GCP VM.
+
+start instance: 
+`gcloud compute instances start tensorfetch-vm --zone=us-central1-a`
+
+stop instance:
+`gcloud compute instances stop tensorfetch-vm --zone=us-central1-a`
 
 ⸻
 
@@ -13,10 +19,8 @@ sudo apt update && sudo apt upgrade -y
 
 2. Core Build and Tracing Toolchain
 
-sudo apt install -y \
-  build-essential clang llvm cmake git pkg-config curl \
-  libelf-dev libbpf-dev zlib1g-dev liburing-dev \
-  linux-tools-common linux-tools-$(uname -r) bpftrace
+sudo apt install -y build-essential clang llvm cmake pkg-config curl jq \
+  libelf-dev libbpf-dev zlib1g-dev liburing-dev python3-venv python3-pip
 
 
 ⸻
