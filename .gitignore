@@ -1,2 +1,6 @@
 data/
-
+daemon/build/
+daemon/bin/
+.vscode/
+ebpf/compile_commands.json
+daemon/compile_commands.json
