@@ -1,0 +1,2 @@
+{"file": "wide_1gb.parquet", "avg_footer_time_ms": 30.457738439945388, "stddev_ms": 2.006148474177464, "runs": 100, "size_mb": 1908.7372579574585}
+{"file": "wide_2gb.parquet", "avg_footer_time_ms": 30.49840346993733, "stddev_ms": 2.0605609406767003, "runs": 100, "size_mb": 3817.408000946045}
