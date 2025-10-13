@@ -4,13 +4,15 @@
 #include <string> 
 #include <vector>
 #include <bpf/libbpf.h>
-#include "event.h"
-#include "trace_open.skel.h"
 #include <unistd.h> // for getpid()
 #include <atomic>
 #include <signal.h>
+#include "io_uring_worker.h"
+#include "event.h"
+#include "trace_open.skel.h"
 
 static std::atomic<bool> running(true);
+static io_uring_worker ioworker;
 
 int handle_event(void *ctx, void *data, size_t data_sz) {
     const struct event_t *e = reinterpret_cast<const struct event_t *>(data);
@@ -26,15 +28,23 @@ int handle_event(void *ctx, void *data, size_t data_sz) {
     std::string comm = e->comm;
 
     if(filename.ends_with(".parquet")) {
-        std::cout << "Detected Parquet file access: " << filename << std::endl;
+        //std::cout << "Detected Parquet file access: " << filename << std::endl;
         std::cout << "PID: " << e->pid << " COMM: " << comm << " FILE: " << filename << std::endl;
         // Add custom logic for handling Parquet file access here
+        ioworker.enqueue(filename);
     }   
     
     return 0;
 }
 
 int main() {
+
+    // === Start io_uring worker ===
+    if (!ioworker.start()) {
+        std::cerr << "Failed to start io_uring worker" << std::endl;
+        return 1;
+    }
+
     struct trace_open_bpf *skeleton = trace_open_bpf__open_and_load();
     boost::asio::io_context io;
     
@@ -90,6 +100,7 @@ int main() {
     if(poll_rb_thread.joinable()) {
         poll_rb_thread.join();
     }
+    ioworker.stop();
     std::cout << "TensorFetch daemon shutting down gracefully..." << std::endl;
 
     //destroy ring buffer here...

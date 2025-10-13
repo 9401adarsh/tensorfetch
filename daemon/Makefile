@@ -3,10 +3,10 @@ CXX := clang++
 CXXFLAGS := -std=c++20 -Wall -Wextra -O2 -g
 
 # === Includes ===
-INCLUDES := -I../ebpf -I../ebpf/include -I/usr/include -I/usr/local/include
+INCLUDES := -I../ebpf -I../ebpf/include -I/usr/include -I/usr/local/include -Iinclude
 
 # === Libraries ===
-LIBS := -lbpf -lelf -lz -lpthread
+LIBS := -lbpf -lelf -lz -lpthread -luring
 
 # === Paths ===
 SRC_DIR := src
