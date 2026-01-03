@@ -1,0 +1,26 @@
+# ===== Makefile for trace_pread BPF program =====
+
+BPF_CLANG     = clang
+BPF_CFLAGS    = -O2 -g -target bpf -D__TARGET_ARCH_x86 -Iinclude
+USER_CLANG    = clang
+USER_CFLAGS   = -O2 -g -Wall -I/usr/include -I/usr/local/include
+LIBS          = -lbpf -lelf -lz -pthread
+
+INCLUDES      = -Iinclude
+
+# --- Build everything ---
+all: trace_pread.skel.h
+
+# --- Compile BPF program ---
+trace_pread.bpf.o: trace_pread.bpf.c include/vmlinux.h include/event.h
+	$(BPF_CLANG) $(BPF_CFLAGS) $(INCLUDES) -c $< -o $@
+
+# --- Generate skeleton header ---
+trace_pread.skel.h: trace_pread.bpf.o
+	bpftool gen skeleton $< > $@
+
+# --- Cleanup ---
+clean:
+	rm -f trace_pread.bpf.o trace_pread.skel.h
+
+.PHONY: all clean

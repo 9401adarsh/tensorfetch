@@ -1,0 +1,21 @@
+BPF_CLANG = clang
+BPF_CFLAGS = -O2 -g -target bpf -D__TARGET_ARCH_x86
+USER_CLANG = clang
+USER_CFLAGS = -O2 -g -Wall -I/usr/include -I/usr/local/include
+LIBS = -lbpf -lelf -lz -lpthread
+
+INCLUDES = -Iinclude
+
+all: trace_vfs_read.skel.h main_vfs_read
+
+trace_vfs_read.bpf.o: trace_vfs_read.bpf.c include/vmlinux.h include/event.h
+	$(BPF_CLANG) $(BPF_CFLAGS) $(INCLUDES) -c $< -o $@
+
+trace_vfs_read.skel.h: trace_vfs_read.bpf.o
+	bpftool gen skeleton $< > $@
+
+main_vfs_read: main_vfs_read.c trace_vfs_read.skel.h include/event.h
+	$(USER_CLANG) $(USER_CFLAGS) $< -o $@ $(LIBS)
+
+clean:
+	rm -f *.o *.skel.h main_vfs_read

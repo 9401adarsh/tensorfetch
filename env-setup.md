@@ -107,3 +107,10 @@ cd ~/projects/tensorfetch
 	•	Workspace: TensorFetch folder structure ready for development
 
 ⸻
+
+
+commands to compile footer_benchmark.cpp
+
+```
+g++ footer_parse_benchmark.cpp -o footer_bench $(pkg-config --cflags --libs arrow parquet)
+```

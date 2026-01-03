@@ -15,7 +15,7 @@ static volatile bool exiting = false;
 
 static int handle_event(void *ctx, void *data, size_t data_sz) {
     const struct event_t *e = data;
-    printf("PID: %-6u COMM: %s\n", e->pid, e->comm);
+    //printf("PID: %-6u COMM: %s\n", e->pid, e->comm);
     return 0;
 }
 
